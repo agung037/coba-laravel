@@ -11,11 +11,18 @@ class PostController extends Controller
     // method untuk menampilkan semua posts
     public function index()
     {
+        $posts = Post::latest();
+
+        if(request('search'))
+        {
+            $posts->where('title', 'like', '%' . request('search') . '%')
+                  ->orWhere('body', 'like', '%' . request('search') . '%');
+        }
+
         return view('posts', [
             "title" => "All Posts",
             "active" => 'posts',
-            // "posts" => Post::all()
-            "posts" => Post::latest()->get()
+            "posts" => $posts->get()
         ]);
     }
 
